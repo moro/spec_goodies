@@ -18,6 +18,12 @@ module SpecGoodies
         end
       end
 
+      def reflesh_scenario_fixture(*args)
+        after(:each) do
+          args.each {|name| self.class.cleanup_scenario_fixture(name) }
+        end
+      end
+
       def fetch_scenario_fixture(key)
         if k = ScenarioFixture.caching_klass(self, key)
           k.scenario_fixture_data[key]

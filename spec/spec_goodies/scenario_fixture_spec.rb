@@ -1,3 +1,4 @@
+require 'spec_helper'
 require 'spec_goodies/scenario_fixture'
 
 describe SpecGoodies::ScenarioFixture do
@@ -12,12 +13,6 @@ describe SpecGoodies::ScenarioFixture do
   end
 
   class SubClass_2 < ExampleGroupKlass
-  end
-
-  Spec::Matchers.define :be_identical_with do |actual|
-    match do |expect|
-      actual.equal?(expect)
-    end
   end
 
   before do

@@ -6,7 +6,8 @@ require 'rubygems'
 $LOAD_PATH.unshift File.expand_path("../../../../", File.dirname(__FILE__))
 $LOAD_PATH.unshift File.expand_path("../lib", File.dirname(__FILE__))
 
-RAILS_ENV="test"
+RAILS_ENV="test" unless defined? RAILS_ENV
+require 'spec_goodies/scenario_fixture'
 
 # require File.expand_path("record_extention_test_util", File.dirname(__FILE__))
 # RecrodExtention::TestUtil.setup
@@ -14,4 +15,14 @@ RAILS_ENV="test"
 # # or
 #
 # require File.expand_path("setup_test_model", File.dirname(__FILE__))
+
+Spec::Runner.configure do |config|
+  config.include ::SpecGoodies::ScenarioFixture
+end
+
+Spec::Matchers.define :be_identical_with do |actual|
+  match do |expect|
+    actual.equal?(expect)
+  end
+end
 
