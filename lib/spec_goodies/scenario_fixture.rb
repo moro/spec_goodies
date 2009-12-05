@@ -13,13 +13,8 @@ module SpecGoodies
       end
 
       def scenario_fixture(name, &builder)
-        define_method(name) do |*args|
-          if var = fetch_scenario_fixture(name)
-            var
-          else
-            scenario_fixture_data[name] = instance_eval(&builder)
-            send name
-          end
+        define_method(name) do
+          fetch_or_build_fixture(name, builder)
         end
       end
 
@@ -48,8 +43,14 @@ module SpecGoodies
     end
     module_function :caching_klass
 
-    def fetch_scenario_fixture(key)
-      self.class.fetch_scenario_fixture(key)
+    private
+    def fetch_or_build_fixture(name, builder)
+      if var = self.class.fetch_scenario_fixture(name)
+        var
+      else
+        scenario_fixture_data[name] = instance_eval(&builder)
+        fetch_or_build_fixture(name, builder)
+      end
     end
   end
 end
