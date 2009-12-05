@@ -23,17 +23,33 @@ module SpecGoodies
         end
       end
 
-      def fetch_scenario_fixture(name)
-        klass = ancestors.detect {|klass|
-          next unless (klass.is_a?(Class) && klass.respond_to?(:scenario_fixture_data))
-          klass.scenario_fixture_data[name]
-        }
-        klass ? klass.scenario_fixture_data[name] : nil
+      def fetch_scenario_fixture(key)
+        if k = ScenarioFixture.caching_klass(self, key)
+          k.scenario_fixture_data[key]
+        else
+          nil
+        end
+      end
+
+      def cleanup_scenario_fixture(key)
+        if k = ScenarioFixture.caching_klass(self, key)
+          !!k.scenario_fixture_data.delete(key)
+        else
+          false
+        end
       end
     end
 
-    def fetch_scenario_fixture(name)
-      self.class.fetch_scenario_fixture(name)
+    def caching_klass(base_klass, key)
+      base_klass.ancestors.detect {|klass|
+        next unless (klass.is_a?(Class) && klass.respond_to?(:scenario_fixture_data))
+        klass.scenario_fixture_data[key]
+      }
+    end
+    module_function :caching_klass
+
+    def fetch_scenario_fixture(key)
+      self.class.fetch_scenario_fixture(key)
     end
   end
 end

@@ -45,6 +45,22 @@ describe SpecGoodies::ScenarioFixture do
     end
   end
 
+  describe "cleanup" do
+    before do
+      @mock.should_receive(:invoke).twice
+      SubClass_1.cleanup_scenario_fixture(:the_data)
+      @original = @parent_sub_obj.the_data # once
+      SubClass_1.cleanup_scenario_fixture(:the_data)
+    end
+    subject { @parent_sub_obj.the_data }
+
+    it "returns same data" do
+      should == @original
+    end
+
+    it { should_not be_identical_with @original }
+  end
+
   describe "other instance / for same level 'it'" do
     before do
       @mock.stub!(:invoke).once
