@@ -17,7 +17,7 @@ module SpecGoodies
           if var = fetch_scenario_fixture(name)
             var
           else
-            self.class.scenario_fixture_data[name] = instance_eval(&builder)
+            scenario_fixture_data[name] = instance_eval(&builder)
             send name
           end
         end
