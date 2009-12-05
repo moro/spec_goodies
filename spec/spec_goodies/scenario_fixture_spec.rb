@@ -16,19 +16,45 @@ describe SpecGoodies::ScenarioFixture do
 
   before do
     @mock = mock = mock("counter")
-    @data = data = "the_data"
-    ExampleGroupKlass.scenario_fixture(:the_data) do
+    SubClass_1.scenario_fixture(:the_data) do
       mock.invoke
-      data
+      "the_data"
     end
-    @example_group = ExampleGroupKlass.new
+    @parent_sub_obj = SubClass_1.new
   end
-  subject { @example_group }
+  subject { @parent_sub_obj }
 
   it { should respond_to(:the_data) }
-  it "block is yield one and only once" do
-    @mock.should_receive(:invoke).once
-    @example_group.the_data.should == "the_data"
+
+  describe "block is yield one and only once" do
+    before do
+      @mock.should_receive(:invoke).at_most(1).times
+    end
+    subject { @parent_sub_obj.the_data }
+
+    it { should == "the_data" }
+
+    specify "even if the method called  at most 1 times." do
+      3.times{ @parent_sub_obj.the_data }
+    end
+  end
+
+  describe "other instance / for same level 'it'" do
+    before do
+      @mock.stub!(:invoke).once
+      @other_instance = SubClass_1.new
+    end
+    subject { @other_instance.the_data }
+    it { should equal @parent_sub_obj.the_data }
+  end
+
+  describe "inheritance" do
+    before do
+      @mock.stub!(:invoke)
+      @child = SubClass_1_1.new
+    end
+    subject { @child.the_data }
+    it { should equal @parent_sub_obj.the_data }
   end
 end
 
