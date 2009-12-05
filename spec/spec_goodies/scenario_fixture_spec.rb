@@ -14,6 +14,12 @@ describe SpecGoodies::ScenarioFixture do
   class SubClass_2 < ExampleGroupKlass
   end
 
+  Spec::Matchers.define :be_identical_with do |actual|
+    match do |expect|
+      actual.equal?(expect)
+    end
+  end
+
   before do
     @mock = mock = mock("counter")
     SubClass_1.scenario_fixture(:the_data) do
@@ -45,7 +51,7 @@ describe SpecGoodies::ScenarioFixture do
       @other_instance = SubClass_1.new
     end
     subject { @other_instance.the_data }
-    it { should equal @parent_sub_obj.the_data }
+    it { should be_identical_with @parent_sub_obj.the_data }
   end
 
   describe "inheritance" do
@@ -54,7 +60,7 @@ describe SpecGoodies::ScenarioFixture do
       @child = SubClass_1_1.new
     end
     subject { @child.the_data }
-    it { should equal @parent_sub_obj.the_data }
+    it { should be_identical_with @parent_sub_obj.the_data }
   end
 
   describe "not inherited" do
