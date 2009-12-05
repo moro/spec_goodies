@@ -56,5 +56,13 @@ describe SpecGoodies::ScenarioFixture do
     subject { @child.the_data }
     it { should equal @parent_sub_obj.the_data }
   end
+
+  describe "not inherited" do
+    before do
+      @non_inherit = SubClass_2.new
+    end
+    subject { @non_inherit }
+    it { should_not respond_to(:the_data) }
+  end
 end
 
